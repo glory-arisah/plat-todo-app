@@ -21,12 +21,12 @@ const firebaseConfig = {
 }
 
 const app = initializeApp(firebaseConfig)
-const db = getFireStore()
-const auth = getAuth()
+export const db = getFireStore()
+export const auth = getAuth()
 
 const googleProvider = new GoogleAuthProvider()
 
-const signInWithGoogle = async () => {
+export const signInWithGoogle = async () => {
   try {
     const resp = await signInWithPopup(auth, googleProvider)
     const user = resp.user
@@ -47,7 +47,7 @@ const signInWithGoogle = async () => {
   }
 }
 
-const logInWithEmailAndPassword = async (email, password) => {
+export const logInWithEmailAndPassword = async (email, password) => {
   try {
     await signInWithEmailAndPassword(auth, email, password)
   } catch (error) {
@@ -55,7 +55,7 @@ const logInWithEmailAndPassword = async (email, password) => {
   }
 }
 
-const registerWithEmailAndPassword = async (displayName, email, password) => {
+export const registerWithEmailAndPassword = async (displayName, email, password) => {
   try {
     const resp = await createUserWithEmailAndPassword(auth, email, password)
     const user = resp.user
@@ -70,7 +70,7 @@ const registerWithEmailAndPassword = async (displayName, email, password) => {
   }
 }
 
-const sendPasswordReset = async (email) => {
+export const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email)
   } catch (error) {
@@ -78,6 +78,6 @@ const sendPasswordReset = async (email) => {
   }
 }
 
-const logout = async () => {
+export const logout = async () => {
   await signOut(auth)
 }
