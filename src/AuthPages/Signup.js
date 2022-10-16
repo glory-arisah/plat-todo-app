@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { userRegistration, googleSignin } from '../authFunctions'
+import { useNavigate } from 'react-router-dom'
 
 const Signup = () => {
   const [displayName, setDisplayName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const navigate = useNavigate()
 
   const handleChange = event => {
     const { name, value } = event.target
@@ -21,11 +23,13 @@ const Signup = () => {
     setPassword('')
     const res = await userRegistration(displayName, email, password)
     if (res && res.error) { setError(res.error) }
+    else navigate('/todos')
   }
 
   const handleGoogleSignin = async () => {
     const res = await googleSignin()
     if (res && res.error) { setError(res.error) }
+    else navigate('/todos')
   }
 
   return (

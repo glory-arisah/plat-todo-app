@@ -1,7 +1,8 @@
 import Login from './AuthPages/Login';
 import Signup from './AuthPages/Signup';
 import ResetPassword from './AuthPages/ResetPassword';
-import Home from './Home'
+import ProtectedRoute from './ProtectedRoute';
+import Todos from './Todos'
 import {
   Routes,
   Route
@@ -14,7 +15,11 @@ function App() {
           <Route exact path='/' element={<Login />} />
           <Route exact path='/signup' element={<Signup />} />
           <Route exact path='/forgot-password' element={<ResetPassword />} />
-          <Route exact path='/todos' element={<Home />} />
+          <Route exact path='/todos' element={
+            // <ProtectedRoute>
+              <Todos />
+            // </ProtectedRoute>
+          }/>
         </Routes>
     </div>
   );

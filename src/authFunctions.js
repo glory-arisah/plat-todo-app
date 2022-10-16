@@ -4,21 +4,24 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
-  signOut
+  signOut,
+  updateProfile
 } from 'firebase/auth';
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { setDoc, collection, getDocs, query, where, doc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 
 // Sign-up with Email and Password
 export const userRegistration = async (name, email, password) => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password)
-    await addDoc(collection(db, 'users'), {
+    await setDoc(doc(db, 'users', res.user.uid), {
       uid: res.user.uid,
       name,
       email,
       authProvider: 'local'
     })
+    await updateProfile(auth.currentUser,
+      { displayName: name })
   } catch (error) {
     return {error: error.message} 
   }
@@ -27,7 +30,7 @@ export const userRegistration = async (name, email, password) => {
 // Sign-in with Email and Password
 export const userSignin = async (email, password) => {
   try {
-    const res = await signInWithEmailAndPassword(auth, email, password)
+    await signInWithEmailAndPassword(auth, email, password)
   } catch (error) {
     return { error: error.message }
   }
@@ -43,7 +46,7 @@ export const googleSignin = async () => {
     const docs = await getDocs(q)
     // check if user already exists in firestore
     if (docs.docs.length === 0) {
-      await addDoc(collection(db, 'users'), {
+      await setDoc(doc(db, 'users', uid), {
         uid,
         displayName,
         email,
