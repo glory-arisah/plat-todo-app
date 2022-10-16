@@ -1,14 +1,6 @@
 import { initializeApp } from 'firebase/app'
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  sendPasswordResetEmail,
-  signOut,
-  GoogleAuthProvider
-} from 'firebase/auth'
-import { getFireStore, addDoc, collection, query, getDocs } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -21,63 +13,5 @@ const firebaseConfig = {
 }
 
 const app = initializeApp(firebaseConfig)
-export const db = getFireStore()
+export const db = getFirestore()
 export const auth = getAuth()
-
-const googleProvider = new GoogleAuthProvider()
-
-export const signInWithGoogle = async () => {
-  try {
-    const resp = await signInWithPopup(auth, googleProvider)
-    const user = resp.user
-    const q = query(collection(db, 'users'), where('uid', '==', user.uid))
-    const docs = await getDocs(q)
-    console.log(q)
-    // check if user exists in cloud firestore
-    if (docs.docs.length === 0) {
-      await addDoc(collection(db, 'users'), {
-        id: user.id,
-        name: user.displayName,
-        email: user.email,
-        authProvider: 'google'
-      })
-    }
-  } catch (error) {
-    alert(error.message)
-  }
-}
-
-export const logInWithEmailAndPassword = async (email, password) => {
-  try {
-    await signInWithEmailAndPassword(auth, email, password)
-  } catch (error) {
-    alert(error.message)
-  }
-}
-
-export const registerWithEmailAndPassword = async (displayName, email, password) => {
-  try {
-    const resp = await createUserWithEmailAndPassword(auth, email, password)
-    const user = resp.user
-    await addDoc(collection(db, 'users'), {
-      id: user.id,
-      email,
-      displayName,
-      authProvider: 'emailAndPassword'
-    })
-  } catch (error) {
-    
-  }
-}
-
-export const sendPasswordReset = async (email) => {
-  try {
-    await sendPasswordResetEmail(auth, email)
-  } catch (error) {
-    alert(error.message)
-  }
-}
-
-export const logout = async () => {
-  await signOut(auth)
-}
